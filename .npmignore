@@ -1,0 +1,5 @@
+.claude/
+src/
+samples/
+CLAUDE.md
+tsconfig.json
