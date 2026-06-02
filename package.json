@@ -1,0 +1,29 @@
+{
+  "name": "@portableweb/cli",
+  "version": "0.1.0",
+  "description": "CLI for creating and validating .pweb bundles",
+  "main": "dist/index.js",
+  "bin": {
+    "pweb": "dist/index.js",
+    "portableweb": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "lint": "eslint src"
+  },
+  "keywords": ["portableweb", "pweb", "cli"],
+  "author": "Omprakash Selvaraj",
+  "license": "MIT",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "commander": "^12.1.0",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
