@@ -2,7 +2,9 @@ import { Command } from "commander";
 import archiver from "archiver";
 import fs from "fs";
 import path from "path";
+import readline from "readline";
 import { loadAndValidateManifest } from "./validate";
+import { promptForManifest } from "../prompts";
 
 export const packCommand = new Command("pack")
   .description("Pack a source directory into a .pweb bundle")
@@ -18,8 +20,16 @@ export const packCommand = new Command("pack")
 
     const manifestPath = path.join(sourceDir, "manifest.json");
     if (!fs.existsSync(manifestPath)) {
-      console.error("Error: manifest.json not found in source directory");
-      process.exit(1);
+      console.log("\nNo manifest.json found — let's generate one.\n");
+      const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+      let generated: { manifest: Record<string, unknown> };
+      try {
+        generated = await promptForManifest(rl);
+      } finally {
+        rl.close();
+      }
+      fs.writeFileSync(manifestPath, JSON.stringify(generated!.manifest, null, 2) + "\n");
+      console.log(`\nGenerated: ${manifestPath}\n`);
     }
 
     const { manifest, errors } = loadAndValidateManifest(manifestPath);
