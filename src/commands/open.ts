@@ -135,8 +135,8 @@ function openMacOS(entryPath: string, tempDir: string, title: string, width: num
   }
 }
 
-export const openCommand = new Command("open")
-  .description("Open a .pweb bundle in the OS native webview")
+export const openCommand = new Command("open-lite")
+  .description("Open a .pweb bundle in the OS native webview (macOS only)")
   .argument("<file>", ".pweb file to open")
   .action(async (file: string) => {
     const filePath = path.resolve(file);
