@@ -99,3 +99,17 @@ npm run build       # compile TypeScript → dist/
 npm link            # make `pweb` available globally from this checkout
 npm run dev         # watch mode
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+## Trademark
+
+PortableWeb™ is claimed as a trademark by the PortableWeb project creator.
+
+The .pweb file format is intended to be an open specification.
+
+Use of the name PortableWeb must not imply endorsement, certification, or official status unless authorized.
+
+Truthful statements such as "supports .pweb files" are permitted.
