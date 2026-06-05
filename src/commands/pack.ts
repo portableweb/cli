@@ -3,6 +3,7 @@ import archiver from "archiver";
 import fs from "fs";
 import path from "path";
 import readline from "readline";
+import { randomUUID } from "crypto";
 import { loadAndValidateManifest } from "./validate";
 import { promptForManifest } from "../prompts";
 
@@ -41,11 +42,11 @@ export const packCommand = new Command("pack")
 
     const outputPath = options.output ?? path.join(process.cwd(), `${manifest!.title.replace(/\s+/g, "-").toLowerCase()}.pweb`);
 
-    await packBundle(sourceDir, outputPath);
+    await packBundle(sourceDir, outputPath, manifest!);
     console.log(`Packed: ${outputPath}`);
   });
 
-async function packBundle(sourceDir: string, outputPath: string): Promise<void> {
+async function packBundle(sourceDir: string, outputPath: string, manifest: Record<string, unknown>): Promise<void> {
   return new Promise((resolve, reject) => {
     const output = fs.createWriteStream(outputPath);
     const archive = archiver("zip", { zlib: { level: 9 } });
@@ -59,7 +60,7 @@ async function packBundle(sourceDir: string, outputPath: string): Promise<void> 
     if (fs.existsSync(mimetypePath)) {
       archive.append(fs.createReadStream(mimetypePath), {
         name: "mimetype",
-        store: true, // uncompressed
+        store: true,
       });
     } else {
       archive.append("application/vnd.portableweb+zip", {
@@ -68,10 +69,14 @@ async function packBundle(sourceDir: string, outputPath: string): Promise<void> 
       });
     }
 
-    // Add all other files except mimetype
+    // Inject uid into the packed manifest (source manifest.json is left unchanged)
+    const packedManifest = { ...manifest, uid: randomUUID() };
+    archive.append(JSON.stringify(packedManifest, null, 2) + "\n", { name: "manifest.json" });
+
+    // Add all other files except mimetype and manifest.json (manifest injected above)
     archive.glob("**/*", {
       cwd: sourceDir,
-      ignore: ["mimetype"],
+      ignore: ["mimetype", "manifest.json"],
     });
 
     archive.finalize();
